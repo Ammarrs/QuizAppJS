@@ -9,15 +9,6 @@ const questions = [
     ] 
   },
   {
-    question: "Which is the largest animal in the world",
-    answers: [
-      { text: "Shark", correct: false },
-      { text: "Blue Whale", correct: true },
-      { text: "Elephant", correct: false },
-      { text: "Giraffe", correct: false },
-    ] 
-  },
-  {
     question: "Which is the smallest country in the world",
     answers: [
       { text: "Vatican City", correct: true },
@@ -94,14 +85,46 @@ function resetStatus() {
 }
 
 function selectAnswer(e) {
-  const selecedBtn = e.target;
-  const isCorrect = selecedBtn.dataset.correct === true;
+  const selectedBtn = e.target;
+  const isCorrect = selectedBtn.dataset.correct;
   if (isCorrect) {
-    selecedBtn.classList.add("correct");
+    selectedBtn.classList.add("correct");
+    score++;
   } else {
-    selecedBtn.classList.add("incorrect");
+    selectedBtn.classList.add("incorrect");
+  }
+  Array.from(ansButtons.children).forEach(button => {
+    if (button.dataset.correct === "true") {
+      button.classList.add("correct");
+    }
+    button.disabled = true;
+  });
+  nextButton.style.display = "block";
+}
+
+function showScore() {
+  resetStatus();
+  questionElement.innerHTML = `Your Score is ${score} out of ${questions.length}`;
+  nextButton.innerHTML = "Restart";
+  nextButton.style.display = "block";
+}
+
+function handleNextButton() {
+  currQuesIndex++;
+  if (currQuesIndex < questions.length) {
+    showQuestion();
+  } else {
+    showScore();
   }
 }
+
+nextButton.addEventListener("click", () => {
+  if (currQuesIndex < questions.length) {
+    handleNextButton();
+  } else {
+    startQuiz();
+  }
+})
 
 startQuiz();
 
